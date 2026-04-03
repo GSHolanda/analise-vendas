@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Vendas</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<header>
+    <h1>Dashboard de Vendas</h1>
+    <p>Análise completa — Python • Flask • MySQL • JavaScript</p>
+</header>
+
+<div class="container">
+
+    <div class="cards">
+        <div class="card">
+            <h3>Total de Vendas</h3>
+            <div class="valor" id="total">...</div>
+            <div class="subtitulo">transações registradas</div>
+        </div>
+        <div class="card">
+            <h3>Receita Total</h3>
+            <div class="valor" id="receita">...</div>
+            <div class="subtitulo">em reais</div>
+        </div>
+        <div class="card">
+            <h3>Avaliação Média</h3>
+            <div class="valor" id="nota">...</div>
+            <div class="subtitulo">de 10 pontos</div>
+        </div>
+    </div>
+
+    <div class="graficos">
+        <div class="chart-box">
+            <h2>Receita por Linha de Produto</h2>
+            <canvas id="graficoProduto"></canvas>
+        </div>
+        <div class="chart-box">
+            <h2>Vendas por Filial</h2>
+            <canvas id="graficoFilial"></canvas>
+        </div>
+    </div>
+
+    <div class="grafico-full">
+        <div class="chart-box">
+            <h2>Vendas por Hora do Dia</h2>
+            <canvas id="graficoHora"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<script>
+fetch('/api/dados')
+    .then(r => r.json())
+    .then(d => {
+
+        // Cards
+        document.getElementById('total').textContent =
+            d.total_vendas.toLocaleString('pt-BR');
+        document.getElementById('receita').textContent =
+            'R$ ' + d.receita_total.toLocaleString('pt-BR', {minimumFractionDigits: 2});
+        document.getElementById('nota').textContent =
+            d.avaliacao_media.toFixed(1);
+
+        // Gráfico 1 — Produtos
+        new Chart(document.getElementById('graficoProduto'), {
+            type: 'bar',
+            data: {
+                labels: d.por_produto.map(x => x.label),
+                datasets: [{
+                    label: 'Receita (R$)',
+                    data: d.por_produto.map(x => x.valor),
+                    backgroundColor: '#4A90D9'
+                }]
+            },
+            options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+        });
+
+        // Gráfico 2 — Filiais
+        new Chart(document.getElementById('graficoFilial'), {
+            type: 'bar',
+            data: {
+                labels: d.por_filial.map(x => x.label),
+                datasets: [{
+                    label: 'Vendas',
+                    data: d.por_filial.map(x => x.valor),
+                    backgroundColor: ['#2196F3', '#4CAF50', '#FF9800']
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+        // Gráfico 3 — Horários
+        new Chart(document.getElementById('graficoHora'), {
+            type: 'line',
+            data: {
+                labels: d.por_hora.map(x => x.label + 'h'),
+                datasets: [{
+                    label: 'Vendas',
+                    data: d.por_hora.map(x => x.valor),
+                    borderColor: '#8B5CF6',
+                    backgroundColor: 'rgba(139,92,246,0.15)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5
+                }]
+            },
+            options: { plugins: { legend: { display: false } } }
+        });
+
+    });
+</script>
+
+</body>
+</html>
