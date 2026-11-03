@@ -108,6 +108,24 @@ O JavaScript faz um `fetch()` nessa rota e monta os gráficos dinamicamente, sem
 
 ---
 
+## Demonstração visual
+
+Gráficos gerados pelo projeto a partir dos dados de vendas:
+
+![Receita por linha de produto](grafico1_produtos.png)
+
+![Desempenho por filial](grafico2_filiais.png)
+
+![Volume de vendas por hora do dia](grafico3_horarios.png)
+
+---
+
+## Licença
+
+Distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE).
+
+---
+
 ## Aprendizados
 
 Esse projeto surgiu como forma de praticar a integração entre as tecnologias que estou estudando. A parte mais interessante foi perceber que a mesma pergunta pode ser respondida de formas diferentes dependendo de como você escreve a query SQL — e que a visualização certa muda completamente a interpretação do dado.
